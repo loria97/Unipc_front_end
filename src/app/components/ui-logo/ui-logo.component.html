@@ -1,0 +1,4 @@
+<a *ngIf="link" href="#" [attr.aria-label]="alt" style="display:inline-flex;align-items:center;line-height:0;">
+  <img [src]="src" [alt]="alt" width="200" height="210" loading="eager" decoding="async" [style.height]="h" [style.filter]="filter" style="width:auto;display:block;">
+</a>
+<img *ngIf="!link" [src]="src" [alt]="alt" width="200" height="210" loading="eager" decoding="async" [style.height]="h" [style.filter]="filter" style="width:auto;display:block;">
