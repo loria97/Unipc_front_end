@@ -1,68 +1,68 @@
-# CLAUDE.md
+# UNIPC — Università Presila Crotonese
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Monorepo del sito e della piattaforma di iscrizione ai corsi.
 
-## Project
+## Struttura
 
-Angular 17 (standalone components, no NgModules) port of the UNIPC (Università Presila Crotonese)
-marketing website. Single-page app: header + home + footer, no routing, no backend — all content is
-hardcoded in component classes.
-
-## Commands
-
-```bash
-npm install       # install deps
-npm start          # ng serve, dev server at http://localhost:4200
-npm run build       # production build → dist/unipc/
-npm run watch       # dev build with --watch
+```
+UNIPC/
+├── frontend/     # applicazione Angular (standalone components)
+├── backend/      # Supabase: migrations, Edge Functions (Deno)
+├── docs/         # documentazione di progetto
+│   └── piano-corsi-professionalizzanti.md   ← piano di riferimento
+└── .claude/      # agenti, skill e comandi
 ```
 
-There are no tests and no linter configured in this repo (no test runner, no ESLint/TSLint config).
+**Prima di lavorare su Corsi Professionalizzanti leggi sempre `docs/piano-corsi-professionalizzanti.md`.**
+È la fonte di verità su fasi, schema dati, macchina a stati e decisioni prese.
 
-## Architecture
+## Stack
 
-- **Bootstrap**: `src/main.ts` calls `bootstrapApplication(AppComponent)` — no `AppModule`. Every
-  component is `standalone: true` and lists its own `imports` (e.g. `NgFor`, `NgIf`, `HoverDirective`).
-- **Layout**: `app.component.ts` composes `<app-header>`, `<app-home>`, `<app-footer>` — there is no router.
-- **Structure**:
-  - `src/app/components/` — reusable pieces: `header/` (mega-menu desktop nav + mobile drawer + search
-    overlay), `footer/`, `ui-logo/` (logo with `variant` full/white/mark and `size` sm/md/lg inputs).
-  - `src/app/pages/home/` — the entire home page; all page content (hero stats, news items, course
-    catalog, testimonials, office locations, etc.) lives as typed arrays/objects directly on
-    `HomeComponent` (see `home.component.ts`), rendered by `home.component.html`.
-  - `src/app/directives/hover.directive.ts` — `[appHover]` custom directive.
-  - `src/assets/` — `brand/` (logo files), `images/`, `docs/` (sample PDFs linked from the news section).
+**Frontend** — Angular standalone, TypeScript strict, signals per lo stato, Reactive Forms tipizzati, SCSS con design token, routing lazy-loaded, `@supabase/supabase-js` v2.
 
-### Styling convention (important, non-standard)
+**Backend** — Supabase (Postgres + Auth + Storage + Edge Functions su Deno), RLS su tutte le tabelle, migration versionate.
 
-This project deliberately does **not** use per-component stylesheets or CSS classes for most visual
-styling:
+**Integrazioni** — Aruba Fatturazione Elettronica (server-side), provider di pagamento dietro adapter (da decidere).
 
-- All visual styling is written as **inline `style="..."` attributes** directly in the component
-  templates (`*.component.html`).
-- Design tokens (colors, shadows, fonts, easing) are CSS custom properties defined once in
-  `src/styles.css` under `:root` (e.g. `--unipc-primary`, `--unipc-accent`, `--font-serif`,
-  `--shadow-md`) and referenced from inline styles via `var(--unipc-*)`.
-- **Hover states** can't be done with inline styles, so they go through the `HoverDirective`:
-  `[appHover]="'background:#b8931f;transform:translateY(-1px);'"` — a string of CSS declarations
-  applied on `mouseenter` and reverted on `mouseleave`.
-- Global concerns (resets, `:focus-visible`, `::selection`, keyframes, the `[data-reveal]` base
-  state) live in `src/styles.css`; everything else is inline.
+## Design system
 
-When editing templates, follow this pattern rather than introducing component `styleUrls`/CSS
-classes, to stay consistent with the rest of the codebase.
+| Token | Valore | Uso |
+|---|---|---|
+| `--unipc-primary` | `#123A5E` | blu accademico |
+| `--unipc-accent` | `#C9A227` | oro antico, CTA e accenti |
+| `--unipc-ink` | `#0E1B2C` | blu notte, header scuro e footer |
 
-### Interaction patterns used in `HomeComponent` and `HeaderComponent`
+Titoli serif, testo sans-serif. Mobile-first: sm 480 / md 768 / lg 1024 / xl 1280. Accessibilità WCAG 2.1 AA.
 
-- **Reveal-on-scroll**: elements marked `data-reveal` in templates are faded/translated in via an
-  `IntersectionObserver` set up in `ngAfterViewInit` (`home.component.ts`), respecting
-  `prefers-reduced-motion`.
-- **Animated counters**: the "numbers" stat section animates from 0 to target once its container
-  intersects the viewport (`runCounters`, cubic ease-out over 1.3s).
-- **News carousel**: scroll-snap track scrolled programmatically via `scrollBy` in `newsPrev`/`newsNext`.
-- **Header**: desktop vs. mobile behavior is driven by a `matchMedia('(min-width: 1180px)')` listener
-  (`desktop` flag), not CSS media queries alone — mega-menu (desktop) and accordion drawer (mobile)
-  are separate code paths reading the same `nav` data array.
+## Regole non negoziabili
 
-All observers/listeners registered in `ngAfterViewInit` are torn down in `ngOnDestroy` — keep this
-symmetry when adding new ones.
+1. **Mai duplicare componenti.** Prima di crearne uno nuovo, cerca in `frontend/src/app/shared/components/`. Se esiste qualcosa di simile, si estende.
+2. **Mai `any`.** TypeScript strict, tipi espliciti, Reactive Forms tipizzati.
+3. **Importi sempre in centesimi interi.** Mai float per il denaro.
+4. **Il prezzo autorevole sta a database.** Il server ricalcola sempre il totale, non si fida mai del client.
+5. **Nessun segreto nel frontend.** Solo la anon key Supabase in `environment.ts`. Service role key e credenziali Aruba/pagamento vivono nei secret delle Edge Functions.
+6. **RLS attiva su ogni tabella** fin dalla prima migration.
+7. **Storage privato.** I documenti si servono solo con signed URL a scadenza breve.
+8. **Se qualcosa è ambiguo, chiedi.** Non inventare requisiti, campi o comportamenti non specificati.
+
+## Comandi
+
+```bash
+# frontend
+cd frontend && npm start          # dev server
+cd frontend && npm run build      # build produzione
+cd frontend && npm test           # unit test
+
+# backend
+cd backend && npx supabase start          # stack locale
+cd backend && npx supabase db push        # applica migration
+cd backend && npx supabase functions serve
+cd backend && npx supabase gen types typescript --local > ../frontend/src/app/core/models/database.types.ts
+```
+
+## Metodo di lavoro
+
+1. **Esplora prima di scrivere.** Leggi i file reali coinvolti, non assumere.
+2. **Un obiettivo per volta.** Se una richiesta copre più fasi del piano, proponi la suddivisione prima di iniziare.
+3. **A fine lavoro** dichiara: cosa è stato modificato, cosa è stato verificato, cosa resta aperto.
+4. Aggiorna `docs/piano-corsi-professionalizzanti.md` quando una decisione cambia.
