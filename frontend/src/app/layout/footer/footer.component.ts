@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { NgFor } from '@angular/common';
-import { HoverDirective } from '../../directives/hover.directive';
-import { UiLogoComponent } from '../ui-logo/ui-logo.component';
+import { HoverDirective } from '../../shared/directives/hover.directive';
+import { UiLogoComponent } from '../../shared/components/ui-logo/ui-logo.component';
 
 @Component({
-  selector: 'app-footer',
+  selector: 'unipc-footer',
   standalone: true,
   imports: [NgFor, HoverDirective, UiLogoComponent],
   templateUrl: './footer.component.html',

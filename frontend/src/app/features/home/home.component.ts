@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { HoverDirective } from '../../directives/hover.directive';
-import { UiLogoComponent } from '../../components/ui-logo/ui-logo.component';
+import { HoverDirective } from '../../shared/directives/hover.directive';
+import { UiLogoComponent } from '../../shared/components/ui-logo/ui-logo.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'unipc-home',
   standalone: true,
   imports: [NgFor, NgIf, HoverDirective, UiLogoComponent],
   templateUrl: './home.component.html',
@@ -20,7 +20,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   private io?: IntersectionObserver;
   private statsIo?: IntersectionObserver;
   private raf = 0;
-  private submitTimer: any;
+  private submitTimer?: ReturnType<typeof setTimeout>;
 
   heroStats = [
     { n: '12.400+', l: 'Studenti iscritti' },
@@ -30,9 +30,9 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   news = [
     { tag: 'Bando', tagColor: 'var(--unipc-primary)', date: '18 feb 2026', title: 'Bando Borse di Studio 2026', desc: "Aperte le domande per le borse di studio a copertura totale o parziale della retta per l'A.A. 2025/2026.", file: 'assets/docs/bando-borse-2026.pdf', docType: 'il bando (PDF)', size: '· 240 KB' },
-    { tag: 'Concorso', tagColor: '#8A6D1F', date: '12 feb 2026', title: 'Concorso per 12 Tutor Didattici', desc: "Selezione pubblica per titoli ed esami per l'affidamento di incarichi di tutoraggio online.", file: 'assets/docs/concorso-tutor.pdf', docType: 'il documento', size: '· 180 KB' },
+    { tag: 'Concorso', tagColor: 'var(--unipc-tag-concorso)', date: '12 feb 2026', title: 'Concorso per 12 Tutor Didattici', desc: "Selezione pubblica per titoli ed esami per l'affidamento di incarichi di tutoraggio online.", file: 'assets/docs/concorso-tutor.pdf', docType: 'il documento', size: '· 180 KB' },
     { tag: 'Documento', tagColor: 'var(--unipc-success)', date: '05 feb 2026', title: 'Calendario Esami 2025/2026', desc: "Pubblicato il calendario completo delle sessioni d'esame telematiche e in sede per tutti i corsi.", file: 'assets/docs/calendario-esami.pdf', docType: 'il calendario', size: '· 96 KB' },
-    { tag: 'Informazione', tagColor: '#5B6675', date: '28 gen 2026', title: 'Regolamento Tasse e Contributi', desc: "Importi, scadenze delle rate, agevolazioni ISEE e modalità di pagamento per l'anno accademico.", file: 'assets/docs/regolamento-tasse.pdf', docType: 'il regolamento', size: '· 120 KB' },
+    { tag: 'Informazione', tagColor: 'var(--unipc-muted)', date: '28 gen 2026', title: 'Regolamento Tasse e Contributi', desc: "Importi, scadenze delle rate, agevolazioni ISEE e modalità di pagamento per l'anno accademico.", file: 'assets/docs/regolamento-tasse.pdf', docType: 'il regolamento', size: '· 120 KB' },
     { tag: 'Avviso', tagColor: 'var(--unipc-danger)', date: '20 gen 2026', title: 'Immatricolazioni 2026 aperte', desc: 'Al via le iscrizioni ai corsi di laurea, magistrali e master. Riconoscimento CFU su valutazione.', file: 'assets/docs/avviso-immatricolazioni.pdf', docType: "l'avviso", size: '· 88 KB' },
   ];
 
@@ -103,7 +103,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
 
   areas = ['Tutti', 'Economica', 'Giuridica', 'Sanitaria', 'Politico-sociale'];
 
-  constructor(private host: ElementRef<HTMLElement>) {}
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   get areaFilters() {
     return this.areas.map((a) => {
@@ -111,8 +111,8 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       return {
         label: a,
         active,
-        bg: active ? 'var(--unipc-primary)' : '#fff',
-        color: active ? '#fff' : 'var(--unipc-ink)',
+        bg: active ? 'var(--unipc-primary)' : 'var(--unipc-surface)',
+        color: active ? 'var(--unipc-surface)' : 'var(--unipc-ink)',
         border: active ? 'var(--unipc-primary)' : 'var(--unipc-border)',
       };
     });

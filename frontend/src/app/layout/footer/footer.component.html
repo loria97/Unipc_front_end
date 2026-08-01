@@ -1,0 +1,42 @@
+<footer style="background:linear-gradient(160deg,var(--unipc-ink),var(--unipc-primary-600));color:rgba(255,255,255,.72);font-family:var(--font-sans);">
+  <div style="max-width:var(--container-max);margin:0 auto;padding:clamp(48px,7vw,80px) var(--space-section-x) 32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;">
+    <div style="min-width:220px;">
+      <div style="margin-bottom:16px;"><unipc-ui-logo variant="white" size="lg"></unipc-ui-logo></div>
+      <p style="font-size:var(--fs-body);line-height:1.6;max-width:34ch;margin:0 0 20px;">L'ateneo telematico che unisce la tradizione della Magna Grecia e la formazione digitale. Studia dove vuoi, senza rinunciare alla qualità.</p>
+      <div style="display:flex;gap:10px;">
+        <a *ngFor="let s of social" href="#" [attr.aria-label]="s.label" style="width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.2);display:grid;place-items:center;color:var(--unipc-surface);font-size:var(--fs-small);font-weight:600;transition:all .18s ease;" [unipcHover]="'background:var(--unipc-accent);color:var(--unipc-ink);border-color:var(--unipc-accent);'">{{ s.abbr }}</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:var(--unipc-surface);font-weight:600;font-size:var(--fs-body);margin-bottom:16px;">Corsi</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:.875rem;">
+        <a *ngFor="let l of footerCourses" href="#" style="color:rgba(255,255,255,.72);" [unipcHover]="'color:var(--unipc-accent);'">{{ l }}</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:var(--unipc-surface);font-weight:600;font-size:var(--fs-body);margin-bottom:16px;">Servizi e link utili</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:.875rem;">
+        <a *ngFor="let l of footerServices" href="#" style="color:rgba(255,255,255,.72);" [unipcHover]="'color:var(--unipc-accent);'">{{ l }}</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:var(--unipc-surface);font-weight:600;font-size:var(--fs-body);margin-bottom:16px;">Contatti</div>
+      <div style="display:flex;flex-direction:column;gap:12px;font-size:.875rem;">
+        <a href="#" style="color:var(--unipc-accent);font-weight:600;" [unipcHover]="'color:var(--unipc-surface);'">☎ Numero Verde 800 123 456</a>
+        <a href="#" style="color:rgba(255,255,255,.72);" [unipcHover]="'color:var(--unipc-accent);'">✉ info&#64;unipc.it</a>
+        <a href="#" style="color:rgba(255,255,255,.72);" [unipcHover]="'color:var(--unipc-accent);'">✆ WhatsApp +39 351 000 0000</a>
+        <span style="line-height:1.5;">⌂ Via Magna Grecia 12,<br>88900 Crotone (KR)</span>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:1px solid rgba(255,255,255,.12);">
+    <div style="max-width:var(--container-max);margin:0 auto;padding:20px var(--space-section-x);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;font-size:var(--fs-eyebrow);color:rgba(255,255,255,.55);">
+      <span>UNIPC S.r.l. · Sede legale: Via Magna Grecia 12, 88900 Crotone (KR) · Sede operativa: Piazza Pitagora 4, Crotone · P.IVA 03000000794 · PEC unipc&#64;pec.it</span>
+      <span style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="#" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Privacy Policy</a>
+        <a href="#" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Cookie Policy</a>
+        <span>© 2026 UNIPC</span>
+      </span>
+    </div>
+  </div>
+</footer>

@@ -1,21 +1,20 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, inject } from '@angular/core';
 
 /**
  * Applies a set of inline CSS declarations while the pointer is over the element,
  * restoring the previous inline values on leave. Lets us port the design's
  * per-element hover styles without a stylesheet class for every case.
  *
- * Usage: [appHover]="'background:#b8931f;transform:translateY(-1px);'"
+ * Usage: [unipcHover]="'background:#b8931f;transform:translateY(-1px);'"
  */
 @Directive({
-  selector: '[appHover]',
+  selector: '[unipcHover]',
   standalone: true,
 })
 export class HoverDirective {
-  @Input('appHover') hoverStyles = '';
+  @Input('unipcHover') hoverStyles = '';
   private previous: Record<string, string> = {};
-
-  constructor(private el: ElementRef<HTMLElement>) {}
+  private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
 
   private parse(input: string): Record<string, string> {
     const out: Record<string, string> = {};

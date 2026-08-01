@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-ui-logo',
+  selector: 'unipc-ui-logo',
   standalone: true,
   imports: [NgIf],
   templateUrl: './ui-logo.component.html',

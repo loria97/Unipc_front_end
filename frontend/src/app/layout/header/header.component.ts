@@ -1,14 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { HoverDirective } from '../../directives/hover.directive';
-import { UiLogoComponent } from '../ui-logo/ui-logo.component';
+import { HoverDirective } from '../../shared/directives/hover.directive';
+import { UiLogoComponent } from '../../shared/components/ui-logo/ui-logo.component';
 
 interface MegaCol { title: string; links: string[]; }
 interface MegaFeatured { cat: string; title: string; }
 interface NavItem { label: string; mega?: { cols: MegaCol[]; featured: MegaFeatured[] }; }
 
 @Component({
-  selector: 'app-header',
+  selector: 'unipc-header',
   standalone: true,
   imports: [NgFor, NgIf, HoverDirective, UiLogoComponent],
   templateUrl: './header.component.html',
@@ -51,12 +51,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     ], featured: [
       { cat: 'Insegnamento', title: 'Percorsi 60 CFU abilitanti' },
       { cat: 'Concorsi', title: 'Preparazione TFA sostegno' },
-    ] } },
-    { label: 'AREA SANITARIA', mega: { cols: [
-      { title: 'Professioni sanitarie', links: ['Infermieristica', 'Fisioterapia', 'Scienze Motorie', 'Master sanitari', 'ECM'] },
-    ], featured: [
-      { cat: 'Laurea', title: 'Scienze Motorie L-22' },
-      { cat: 'ECM', title: 'Formazione continua sanitaria' },
     ] } },
     { label: 'PUBBLICA AMMINISTRAZIONE', mega: { cols: [
       { title: 'Per la PA', links: ['Corsi per concorsi', 'Formazione dipendenti pubblici', 'Aggiornamento professionale', 'Convenzioni enti'] },

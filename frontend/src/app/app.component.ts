@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from './components/header/header.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { HomeComponent } from './pages/home/home.component';
+import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './layout/header/header.component';
+import { FooterComponent } from './layout/footer/footer.component';
 
 @Component({
-  selector: 'app-root',
+  selector: 'unipc-root',
   standalone: true,
-  imports: [HeaderComponent, FooterComponent, HomeComponent],
+  imports: [HeaderComponent, FooterComponent, RouterOutlet],
   template: `
     <div style="min-height:100vh;background:var(--unipc-surface);">
-      <app-header></app-header>
-      <app-home></app-home>
-      <app-footer></app-footer>
+      <unipc-header></unipc-header>
+      <router-outlet></router-outlet>
+      <unipc-footer></unipc-footer>
     </div>
   `,
 })
