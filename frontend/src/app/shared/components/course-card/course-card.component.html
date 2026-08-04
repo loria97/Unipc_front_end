@@ -1,0 +1,26 @@
+<a class="card" [routerLink]="['/corsi-professionalizzanti', course.slug]">
+  <span class="card__body">
+    <span class="card__type-badge">{{ typeLabel }}</span>
+    <span class="card__area">{{ course.area }}</span>
+    <h3 class="card__title">{{ course.title }}</h3>
+    <p class="card__abstract">{{ course.abstract }}</p>
+
+    <span class="card__meta">
+      <span class="card__meta-item">{{ course.durataLabel }}</span>
+      <span class="card__meta-item" *ngIf="course.cfu as cfu">{{ cfu }} CFU</span>
+    </span>
+
+    <span class="card__price-row">
+      <ng-container *ngIf="pricing.isPromo; else listPriceOnly">
+        <span class="card__price-list">{{ course.listPriceCents | euroCents }}</span>
+        <span class="card__price-promo">{{ pricing.cents | euroCents }}</span>
+        <span class="card__promo-label" *ngIf="course.promo as promo">{{ promo.label }}</span>
+      </ng-container>
+      <ng-template #listPriceOnly>
+        <span class="card__price-current">{{ pricing.cents | euroCents }}</span>
+      </ng-template>
+    </span>
+
+    <span class="card__cta" aria-hidden="true">Scopri di più →</span>
+  </span>
+</a>

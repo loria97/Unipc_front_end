@@ -1,0 +1,8 @@
+// Dimensioni condivise tra `unipc-course-card` (card reale) e
+// `unipc-course-card-skeleton` (placeholder di caricamento): se i due
+// stylesheet definissero padding/radius per conto proprio, una modifica in
+// uno dei due disallineerebbe visivamente lo skeleton dalla card vera (salto
+// di layout quando i dati arrivano).
+$card-radius: var(--radius-lg);
+$card-padding: 20px;
+$card-gap: 12px;

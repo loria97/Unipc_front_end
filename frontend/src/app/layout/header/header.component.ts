@@ -1,16 +1,20 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { HoverDirective } from '../../shared/directives/hover.directive';
 import { UiLogoComponent } from '../../shared/components/ui-logo/ui-logo.component';
 
 interface MegaCol { title: string; links: string[]; }
 interface MegaFeatured { cat: string; title: string; }
-interface NavItem { label: string; mega?: { cols: MegaCol[]; featured: MegaFeatured[] }; }
+// `route`, se presente, collega la voce alla route Angular corrispondente
+// tramite `routerLink`; le voci senza `route` restano `href="#"` finché non
+// esiste una pagina di destinazione (fuori scope di questa modifica).
+interface NavItem { label: string; route?: string; mega?: { cols: MegaCol[]; featured: MegaFeatured[] }; }
 
 @Component({
   selector: 'unipc-header',
   standalone: true,
-  imports: [NgFor, NgIf, HoverDirective, UiLogoComponent],
+  imports: [NgFor, NgIf, RouterLink, HoverDirective, UiLogoComponent],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
@@ -58,7 +62,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       { cat: 'Concorsi', title: 'Preparazione concorsi pubblici' },
       { cat: 'Convenzioni', title: 'Formazione per enti locali' },
     ] } },
-    { label: 'CORSI PROFESSIONALIZZANTI' },
+    { label: 'CORSI PROFESSIONALIZZANTI', route: '/corsi-professionalizzanti' },
     { label: 'SERVIZI', mega: { cols: [
       { title: 'Servizi agli studenti', links: ['Segreteria studenti', 'Orientamento', 'Tutoraggio', 'Biblioteca digitale', 'Placement'] },
     ], featured: [

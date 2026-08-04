@@ -72,6 +72,28 @@ function createFakeSupabaseService(options: {
   return { client: fakeClient } as unknown as SupabaseService;
 }
 
+/**
+ * Doppio che conta le chiamate a `.order(...)` per verificare che
+ * `refresh()` rilanci davvero la query invece di riprodurre per sempre lo
+ * stesso `shareReplay(1)` (comportamento che renderebbe un bottone "Riprova"
+ * silenziosamente inefficace dopo un primo errore).
+ */
+function createCountingFakeSupabaseService(rows: CourseRow[]): { service: SupabaseService; calls: () => number } {
+  let callCount = 0;
+  const fakeClient = {
+    from: () => ({
+      select: () => ({
+        order: () => {
+          callCount += 1;
+          return Promise.resolve({ data: rows, error: null });
+        },
+      }),
+    }),
+  };
+
+  return { service: { client: fakeClient } as unknown as SupabaseService, calls: () => callCount };
+}
+
 describe('CoursesService', () => {
   function setup(fakeSupabase: SupabaseService): CoursesService {
     TestBed.configureTestingModule({
@@ -119,6 +141,25 @@ describe('CoursesService', () => {
         expect(result.error.message).toBe('connessione al DB fallita');
       }
       done();
+    });
+  });
+
+  it('refresh() rilancia la query: una nuova subscription dopo refresh() riceve dati aggiornati', (done) => {
+    const rows = [buildRow({ slug: 'corso-a' })];
+    const { service: fakeSupabase, calls } = createCountingFakeSupabaseService(rows);
+    const service = setup(fakeSupabase);
+
+    service.getAll().subscribe((first) => {
+      expect(first.ok).toBeTrue();
+      expect(calls()).toBe(1);
+
+      service.refresh();
+
+      service.getAll().subscribe((second) => {
+        expect(second.ok).toBeTrue();
+        expect(calls()).toBe(2);
+        done();
+      });
     });
   });
 });

@@ -1,0 +1,148 @@
+@use 'mixins' as *;
+@use './course-card.shared' as cc;
+
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  background: var(--unipc-surface);
+  border: 1px solid var(--unipc-border);
+  border-radius: cc.$card-radius;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    box-shadow 0.2s var(--ease),
+    transform 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--unipc-border-hover-alt);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--unipc-primary);
+    outline-offset: 2px;
+  }
+}
+
+.card__type-badge {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--unipc-accent-soft);
+  color: var(--unipc-primary-600);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: cc.$card-gap;
+  flex: 1;
+  min-width: 0;
+  padding: cc.$card-padding;
+}
+
+.card__area {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--unipc-tag-concorso);
+}
+
+.card__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--unipc-ink);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+.card__abstract {
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--unipc-muted);
+  margin: 0;
+  flex: 1;
+  overflow-wrap: break-word;
+}
+
+.card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.card__meta-item {
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+  padding: 4px 10px;
+  border: 1px solid var(--unipc-border);
+  border-radius: var(--radius-sm);
+}
+
+.card__price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.card__price-current,
+.card__price-promo {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--unipc-primary);
+}
+
+.card__price-list {
+  font-size: var(--fs-body);
+  color: var(--unipc-muted);
+  text-decoration: line-through;
+}
+
+.card__promo-label {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--unipc-accent-soft);
+  color: var(--unipc-primary-600);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.card__cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+  font-size: var(--fs-body);
+  color: var(--unipc-primary);
+  border-bottom: 2px solid var(--unipc-accent);
+  align-self: flex-start;
+  padding-bottom: 2px;
+}
+
+@include md {
+  .card__title {
+    font-size: 1.3rem;
+  }
+}

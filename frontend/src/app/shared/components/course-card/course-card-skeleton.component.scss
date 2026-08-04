@@ -1,0 +1,90 @@
+@use './course-card.shared' as cc;
+
+:host {
+  display: block;
+  height: 100%;
+  min-width: 0;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  background: var(--unipc-surface);
+  border: 1px solid var(--unipc-border);
+  border-radius: cc.$card-radius;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.skeleton__body {
+  display: flex;
+  flex-direction: column;
+  gap: cc.$card-gap;
+  flex: 1;
+  padding: cc.$card-padding;
+}
+
+.skeleton__line {
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--unipc-placeholder-1);
+  width: 100%;
+}
+
+.skeleton__line--badge {
+  width: 26%;
+  height: 18px;
+  border-radius: 999px;
+}
+
+.skeleton__line--area {
+  width: 40%;
+  height: 10px;
+}
+
+.skeleton__line--title {
+  width: 85%;
+  height: 20px;
+}
+
+.skeleton__line--text {
+  height: 12px;
+}
+
+.skeleton__line--short {
+  width: 60%;
+}
+
+.skeleton__line--price {
+  width: 35%;
+  height: 22px;
+  margin-top: auto;
+}
+
+// L'animazione shimmer è puramente decorativa: rispettiamo
+// prefers-reduced-motion disattivandola del tutto per chi la richiede,
+// lasciando comunque i placeholder statici visibili come indicatore di
+// caricamento.
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton__line {
+    background: linear-gradient(
+      90deg,
+      var(--unipc-placeholder-1) 25%,
+      var(--unipc-placeholder-2) 37%,
+      var(--unipc-placeholder-1) 63%
+    );
+    background-size: 400% 100%;
+    animation: unipc-skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes unipc-skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}

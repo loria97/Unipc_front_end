@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
-import { catchError, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, Observable, from, of } from 'rxjs';
+import { catchError, map, shareReplay, switchMap } from 'rxjs/operators';
 import { CourseMappingError, mapCourseRow } from '../models/course.mapper';
 import type { ProfessionalCourse } from '../models/course.model';
 import type { DataResult } from '../models/data-result';
@@ -26,16 +26,28 @@ function toErrorResult<T>(err: unknown): DataResult<T> {
 export class CoursesService {
   private readonly supabase = inject(SupabaseService);
 
-  // Costruito una sola volta: la sorgente viene eseguita al primo subscribe
-  // (Observable "cold" fino a quel momento) e poi condivisa/riprodotta ai
-  // subscriber successivi tramite shareReplay(1), evitando query duplicate
-  // quando più componenti consumano la stessa lista di corsi.
-  private readonly courses$: Observable<DataResult<ProfessionalCourse[]>> = this.buildGetAll().pipe(
+  // Pilotato da `refresh$`: ogni emissione rilancia `buildGetAll()` da capo.
+  // Senza questo, un errore sulla prima query resterebbe cacheato per
+  // sempre da `shareReplay(1)` e un bottone "Riprova" che si limitasse a
+  // ri-sottoscriversi riceverebbe lo stesso errore all'infinito, senza mai
+  // ritentare la chiamata a Supabase.
+  private readonly refresh$ = new BehaviorSubject<void>(undefined);
+
+  // shareReplay(1) condivide/riproduce l'ultimo risultato ai subscriber
+  // successivi, evitando query duplicate quando più componenti consumano la
+  // stessa lista di corsi tra un refresh e l'altro.
+  private readonly courses$: Observable<DataResult<ProfessionalCourse[]>> = this.refresh$.pipe(
+    switchMap(() => this.buildGetAll()),
     shareReplay(1),
   );
 
   getAll(): Observable<DataResult<ProfessionalCourse[]>> {
     return this.courses$;
+  }
+
+  /** Rilancia la query `getAll()` da capo (es. bottone "Riprova" dopo un errore). */
+  refresh(): void {
+    this.refresh$.next();
   }
 
   getBySlug(slug: string): Observable<DataResult<ProfessionalCourse>> {

@@ -97,6 +97,8 @@ src/app/
 │   │   ├── courses.service.ts
 │   │   ├── cart.service.ts
 │   │   ├── order.service.ts
+│   │   ├── consent.service.ts
+│   │   ├── script-loader.service.ts
 │   │   └── payment/
 │   │       ├── payment-provider.interface.ts
 │   │       └── manual-transfer.provider.ts
@@ -108,6 +110,8 @@ src/app/
 │   │   ├── course-card/
 │   │   ├── auth-form/
 │   │   ├── file-upload/
+│   │   ├── cookie-preferences/
+│   │   ├── consent-gate/
 │   │   └── stepper/
 │   └── validators/
 │       ├── codice-fiscale.validator.ts
@@ -119,6 +123,8 @@ src/app/
 │   ├── auth/
 │   ├── checkout/
 │   └── area-studente/
+├── layout/
+│   └── cookie-banner/
 └── styles/
     ├── _tokens.scss
     └── _mixins.scss
@@ -240,6 +246,54 @@ Le transizioni sono validate **lato server** (funzione o trigger Postgres). Ogni
 
 ---
 
+### Fase 3b — Cookie, consensi e script di terze parti
+
+> Da fare subito dopo le Fasi 2/3 e **prima della Fase 4**: il pulsante Google e qualsiasi tag di analytics non devono caricarsi prima del consenso. Rimandare questa fase a fine progetto significa rifare il lavoro sugli script già integrati.
+
+**Principio:** nessuno script non necessario viene eseguito e nessun cookie non tecnico viene scritto finché l'utente non ha espresso una scelta. Il consenso è la porta d'ingresso degli script, non un'etichetta appiccicata dopo.
+
+**Categorie di consenso**
+
+| Categoria | Contenuto | Consenso |
+|---|---|---|
+| Necessari | sessione Supabase, carrello in `localStorage`, stato del checkout, preferenza di consenso | sempre attivi, non disattivabili |
+| Preferenze | eventuali scelte UI persistite | opt-in |
+| Statistiche | analytics | opt-in |
+| Marketing | pixel pubblicitari, remarketing | opt-in |
+
+Le categorie senza servizi reali **non si mostrano**: un banner con quattro toggle finti è peggio di uno con due veri.
+
+**Requisiti del banner** (linee guida Garante Privacy, giugno 2021)
+
+- Prima interazione: "Accetta tutti", "Rifiuta tutti" e "Personalizza" con **pari evidenza grafica** — stesso peso visivo, stesso contrasto, nessun bottone secondario mimetizzato
+- La X di chiusura equivale a **rifiuto**, non a consenso
+- Scroll, click sulla pagina e permanenza **non** sono consenso
+- Nessun cookie wall: il sito resta usabile anche rifiutando tutto
+- Se l'utente rifiuta, il banner non si ripropone prima di **6 mesi**
+- Link permanente "Preferenze cookie" nel footer per riaprire il pannello e cambiare idea
+- Pagine dedicate `/cookie-policy` (con tabella dei cookie: nome, finalità, durata, titolare) e `/privacy`, linkate dal banner e dal footer
+
+**Implementazione**
+
+- `core/services/consent.service.ts`: stato con signals, API `hasConsent(category)`, `acceptAll()`, `rejectAll()`, `save(preferences)`, `revoke()`
+- Persistenza con **versione dello schema di consenso** + timestamp + scadenza 6 mesi. Se le categorie o i servizi cambiano, la versione si incrementa e il consenso si richiede di nuovo
+- `core/services/script-loader.service.ts`: unico punto che inietta script di terze parti, chiamato solo dietro `hasConsent()`. Nessun `<script>` di terze parti in `index.html`
+- `layout/cookie-banner/` per la barra e `shared/components/cookie-preferences/` per il pannello granulare — **se la bozza Claude Design ha già un banner, si estende quello**
+- `shared/components/consent-gate/`: placeholder click-to-load per embed (mappe, video). Mostra un segnaposto con la ragione del blocco e un pulsante "Carica contenuto" che dà consenso puntuale, senza sbloccare l'intera categoria
+- Font self-hosted, non da CDN di terze parti
+- Revoca reale: al `revoke()` i cookie già scritti dalla categoria vengono **cancellati** e la pagina ricaricata se lo script non è rimovibile a caldo
+
+**Accessibilità**
+
+- Pannello preferenze come `role="dialog"` `aria-modal="true"`, focus trap, `Esc` che chiude equivalendo a rifiuto, focus che ritorna all'elemento di partenza
+- Banner annunciato ma non intrappolante: raggiungibile da tastiera come primo blocco interattivo, senza bloccare la lettura della pagina agli screen reader
+- Contrasto verificato: `--unipc-accent #C9A227` su fondo bianco **non** passa AA per il testo → usare l'oro come fondo con testo `--unipc-ink`, o il blu primario per i bottoni
+- Nessun blocco per crawler: il banner non deve impedire l'indicizzazione
+
+**Uscita:** con DevTools a sessione pulita, prima di qualsiasi scelta non risulta scritto nessun cookie né storage oltre a quelli necessari; "Rifiuta tutti" non carica nulla; il consenso sopravvive al refresh e scade a 6 mesi; il pannello è riapribile dal footer; la revoca cancella i cookie della categoria; axe pulito su banner e pannello; nessun layout shift all'apertura.
+
+---
+
 ### Fase 4 — Autenticazione
 
 **Due punti di ingresso, un solo componente.** Il login serve come pagina autonoma (`/accedi`, dall'header) e come primo step del checkout. Il form si scrive una volta in `shared/components/auth-form/`; le due route lo ospitano con configurazioni diverse (redirect al `returnUrl` vs avanzamento allo step successivo). Duplicarlo porta a validazioni che divergono nel tempo.
@@ -259,7 +313,7 @@ Le transizioni sono validate **lato server** (funzione o trigger Postgres). Ogni
 - Chi entra con Google ha email verificata ma **profilo incompleto**: lo step 2 deve trattarlo come caso normale
 - Header con stato dinamico: "Accedi" oppure nome utente con menu (Area studente, Ordini, Esci)
 - Errori di login generici ("credenziali non valide"): mai distinguere email inesistente da password errata
-- Il pulsante Google carica risorse di terze parti → va coordinato con il banner cookie
+- Il pulsante Google carica risorse di terze parti → va caricato tramite lo `ScriptLoaderService` della Fase 3b, dietro verifica del consenso
 - Metodi di accesso come **lista configurabile** nell'`AuthService`, così SPID si aggiunge dopo senza toccare i componenti
 
 **Accessibilità:** label reali, `autocomplete="email"` e `current-password`, errori con `aria-live`, focus sul primo campo invalido.
@@ -405,6 +459,7 @@ PDF di cortesia generato e salvato in Storage, scaricabile dall'area studente. L
 - RLS verificate riga per riga con test dedicati
 - Audit log su tutti i cambi di stato
 - GDPR: informativa, consensi con timestamp, retention dei documenti, DPA con Supabase e provider di pagamento
+- **Verifica** dei consensi cookie implementati in Fase 3b: nessun cookie non necessario scritto prima della scelta, revoca effettiva, banner coerente su tutte le pagine nuove (l'implementazione è già fatta, qui si controlla)
 - Unit test su calcolo totali e macchina a stati
 - Un E2E Playwright sull'intero flusso
 - Test axe su tutte le pagine nuove
@@ -415,6 +470,7 @@ PDF di cortesia generato e salvato in Storage, scaricabile dall'area studente. L
 ## 7. Ordine di lavoro consigliato
 
 Le fasi **1→2→3** sono frontend puro e producono subito qualcosa di dimostrabile. In parallelo si chiude la **Fase 0** con commercialista e legale, perché IVA e provider di pagamento bloccano le fasi 8 e 10.
+La **Fase 3b** (cookie e consensi) si incastra qui: è frontend puro, non dipende da Supabase e va chiusa **prima della Fase 4**, perché il pulsante Google carica risorse di terze parti che non devono partire senza consenso.
 Poi **4→5→6**, quindi **7→8→9→10**, che sono le più delicate, infine **11→12**.
 
 ---
@@ -428,6 +484,7 @@ Poi **4→5→6**, quindi **7→8→9→10**, che sono le più delicate, infine 
 | 3 | Pagina catalogo con filtri | pronto |
 | 4 | Pagina dettaglio corso | pronto |
 | 5 | `CartService`, drawer, badge header | pronto |
+| 5b | Banner cookie, `ConsentService`, script loader, pagine policy | **serve elenco servizi terzi + testi policy** |
 | 6 | Auth base: email+password, Google OAuth, sessione, guard, header | pronto |
 | 7 | Auth complementare: reset password, verifica email, identity linking, merge carrello | pronto |
 | 8 | Profilo e completamento dati di fatturazione | pronto |
@@ -450,6 +507,7 @@ Poi **4→5→6**, quindi **7→8→9→10**, che sono le più delicate, infine 
 5. **Revisione della firma**: automatica o con approvazione manuale della segreteria prima del pagamento
 6. **Diritto di recesso** e testi legali da pubblicare
 7. Se i corsi hanno **posti limitati** o scadenze di iscrizione → serve gestione disponibilità e prenotazione temporanea del posto durante il checkout
+8. **Servizi di terze parti** effettivamente in uso o previsti (analytics, Google Maps, video embed, reCAPTCHA, pixel pubblicitari) e **testi di cookie policy e privacy** → determinano quali categorie mostrare nel banner e cosa dichiarare (Fase 3b). Da chiarire anche se serve una prova del consenso lato server (tabella `consents`) oltre alla persistenza client
 
 ---
 

@@ -1,0 +1,91 @@
+<main id="main" class="page">
+  <header class="page__intro">
+    <div class="page__container">
+      <span class="page__eyebrow">Formazione continua</span>
+      <h1 class="page__title">Corsi Professionalizzanti</h1>
+      <p class="page__lead">
+        Percorsi e certificazioni per l'aggiornamento professionale: crediti formativi
+        riconosciuti, modalità online e requisiti d'ammissione chiari per ogni corso.
+      </p>
+    </div>
+  </header>
+
+  <div class="page__container">
+    <form class="filters" role="search" aria-label="Filtra i corsi professionalizzanti" (submit)="$event.preventDefault()">
+      <div class="filters__field">
+        <label class="filters__label" for="filter-q">Cerca per titolo o descrizione</label>
+        <input
+          id="filter-q"
+          class="filters__control"
+          type="search"
+          name="q"
+          [value]="displayedSearchTerm()"
+          (input)="onSearchInputChange($event)"
+          placeholder="Es. management, digitale, certificazione…"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filters__field">
+        <label class="filters__label" for="filter-area">Area tematica</label>
+        <select
+          id="filter-area"
+          class="filters__control"
+          name="area"
+          [value]="selectedArea()"
+          (change)="onAreaChange($event)"
+        >
+          <option value="">Tutte le aree</option>
+          <option *ngFor="let area of areas()" [value]="area">{{ area }}</option>
+        </select>
+      </div>
+
+      <div class="filters__field">
+        <label class="filters__label" for="filter-tipo">Tipologia</label>
+        <select
+          id="filter-tipo"
+          class="filters__control"
+          name="tipo"
+          [value]="selectedType()"
+          (change)="onTypeChange($event)"
+        >
+          <option value="">Tutte le tipologie</option>
+          <option value="corso">Corso</option>
+          <option value="certificazione">Certificazione</option>
+        </select>
+      </div>
+
+      <div class="filters__field filters__field--action">
+        <button type="button" class="filters__reset" (click)="resetFilters()">Azzera i filtri</button>
+      </div>
+    </form>
+
+    <p class="results" role="status" aria-live="polite">{{ resultsCountLabel() }}</p>
+
+    <section aria-labelledby="risultati-heading">
+      <h2 id="risultati-heading" class="u-visually-hidden">Elenco dei corsi</h2>
+
+      <ng-container [ngSwitch]="viewState()">
+        <div class="grid" *ngSwitchCase="'loading'">
+          <unipc-course-card-skeleton *ngFor="let s of skeletons"></unipc-course-card-skeleton>
+        </div>
+
+        <div class="state state--error" *ngSwitchCase="'error'">
+          <p class="state__title">Non è stato possibile caricare i corsi.</p>
+          <p class="state__detail">Riprova tra qualche istante: se il problema persiste, contatta la segreteria.</p>
+          <button type="button" class="state__action" (click)="retry()">Riprova</button>
+        </div>
+
+        <div class="state state--empty" *ngSwitchCase="'empty'">
+          <p class="state__title">Nessun corso corrisponde ai filtri selezionati.</p>
+          <p class="state__detail">Prova ad ampliare la ricerca o azzera i filtri per vedere tutti i corsi.</p>
+          <button type="button" class="state__action" (click)="resetFilters()">Azzera i filtri</button>
+        </div>
+
+        <div class="grid" *ngSwitchCase="'ready'">
+          <unipc-course-card *ngFor="let course of filteredCourses()" [course]="course" [now]="now"></unipc-course-card>
+        </div>
+      </ng-container>
+    </section>
+  </div>
+</main>
