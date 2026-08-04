@@ -134,7 +134,7 @@ supabase/
 
 | Tabella | Contenuto |
 |---|---|
-| `courses` | Corsi con **prezzo autorevole** in centesimi (`price_cents`), regime IVA, durata, CFU |
+| `courses` | Corsi/certificazioni con **prezzo autorevole** in centesimi (`list_price_cents`/`promo_price_cents`, non un singolo `price_cents`), regime IVA, durata, CFU — schema implementato, vedi dettaglio sotto |
 | `profiles` | Nome, cognome, CF, data/luogo nascita, telefono, indirizzo fatturazione, P.IVA, SDI/PEC |
 | `orders` | `user_id`, stato, totali, numero pratica, timestamp |
 | `order_items` | Righe ordine con prezzo congelato al momento dell'acquisto |
@@ -142,6 +142,19 @@ supabase/
 | `documents` | PDF generato e PDF firmato: path storage, `sha256`, tipo, stato |
 | `payments` | Provider, riferimento esterno, stato, importo |
 | `audit_log` | Evento, `order_id`, `user_id`, IP, user-agent, timestamp |
+
+### Schema `courses` (implementato)
+
+Migration: `backend/supabase/migrations/20260801093000_create_courses_table.sql` (+ seed demo `20260801094500_seed_demo_courses.sql`, rimovibile quando arrivano i corsi reali).
+
+- **Identità**: `slug` (unique), `title`, `type` (`corso`|`certificazione`), `area`, `abstract`, `hero_image` (jsonb `{src, alt}`)
+- **Contenuti**: `a_chi_e_rivolto`, `obiettivi`, `requisiti_ammissione` (`text[]`, paragrafi con HTML inline limitato a `<strong>`/`<em>`/`<a href>`), `programma` (`text[]` opzionale)
+- **Specifiche**: `durata_ore` (> 0), `durata_label`, `cfu` (nullable — NULL per le certificazioni), `modalita`, `prove_previste` (`text[]` opzionale)
+- **Prezzo**: `list_price_cents`, `promo_price_cents`/`promo_label`/`promo_valid_until` (tutti e tre NULL o tutti valorizzati, e se valorizzati `promo_price_cents < list_price_cents`), `vat_regime` (`esente_art10`|`iva_22`|`da_definire`, default `da_definire` — il regime IVA definitivo resta una decisione aperta, vedi sezione 9)
+- **Normativa**: `riferimenti_normativi` (jsonb array `{label, url}`), `punti_graduatoria` (jsonb `{punti, note}`), `classi_concorso` (`text[]`)
+- **Pubblicazione**: `published`, `sort_order`, `seo` (jsonb `{metaTitle, metaDescription}`), `created_at`/`updated_at` (trigger `set_updated_at()`)
+- RLS attiva: unica policy SELECT per `anon`/`authenticated` con `using (published = true)`; nessuna policy insert/update/delete (scrittura da service role/dashboard)
+- Tipi generati in `frontend/src/app/core/models/database.types.ts`
 
 **Regole non negoziabili**
 
@@ -410,7 +423,7 @@ Poi **4→5→6**, quindi **7→8→9→10**, che sono le più delicate, infine 
 
 | # | Prompt | Stato |
 |---|---|---|
-| 1 | Setup Supabase: schema, RLS, storage, tipi generati | pronto |
+| 1 | Setup Supabase: schema, RLS, storage, tipi generati | tabella `courses` + RLS + tipi fatti — bucket storage `enrollment-docs` ancora da fare |
 | 2 | Modelli TS e `CoursesService` | pronto |
 | 3 | Pagina catalogo con filtri | pronto |
 | 4 | Pagina dettaglio corso | pronto |
