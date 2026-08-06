@@ -1,0 +1,122 @@
+<!-- BOZZA — da validare con il legale dell'ateneo prima della pubblicazione -->
+<article class="legal-page">
+  <div class="legal-page__draft-banner" role="note">
+    BOZZA — contenuto in attesa di validazione legale, non ancora pubblicato in via definitiva.
+  </div>
+
+  <header class="legal-page__header">
+    <h1 class="legal-page__title">Privacy Policy</h1>
+    <p class="legal-page__updated">Ultimo aggiornamento: 6 agosto 2026</p>
+  </header>
+
+  <section class="legal-page__section">
+    <h2>1. Titolare del trattamento</h2>
+    <p>
+      {{ legalEntity.ragioneSociale }}, con sede legale in {{ legalEntity.sedeLegale }} e sede operativa in
+      {{ legalEntity.sedeOperativa }}, P.IVA {{ legalEntity.partitaIva }}, PEC {{ legalEntity.pec }}, email
+      {{ legalEntity.email }}.
+    </p>
+    <p class="legal-page__placeholder">[DA COMPILARE: codice fiscale dell'ente]</p>
+    <p class="legal-page__placeholder">
+      [DA COMPILARE: nominativo e recapito del titolare del trattamento]
+    </p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>2. Responsabile della protezione dei dati (DPO)</h2>
+    <p class="legal-page__placeholder">[DA COMPILARE: esistenza e contatti del DPO]</p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>3. Tipi di dati raccolti</h2>
+    <ul>
+      <li>
+        Dati di navigazione tecnici trattati dai servizi elencati nella
+        <a routerLink="/cookie-policy">Cookie Policy</a>.
+      </li>
+      <li>
+        Dati identificativi e di contatto forniti in fase di registrazione e checkout (nome, cognome, email, dati
+        di fatturazione), come previsto dalle Fasi 4 e 5 del progetto.
+      </li>
+    </ul>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>4. Finalità e base giuridica del trattamento</h2>
+    <div class="legal-page__table-wrap">
+      <table class="legal-page__table">
+        <caption class="u-visually-hidden">Finalità del trattamento e relativa base giuridica</caption>
+        <thead>
+          <tr>
+            <th scope="col">Finalità</th>
+            <th scope="col">Base giuridica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Erogazione dei servizi richiesti (carrello, iscrizione ai corsi)</td>
+            <td>Esecuzione di un contratto o di misure precontrattuali (art. 6.1.b GDPR)</td>
+          </tr>
+          <tr>
+            <td>Emissione della fattura elettronica</td>
+            <td>Obbligo legale (art. 6.1.c GDPR)</td>
+          </tr>
+          <tr>
+            <td>Caratteri tipografici da Google Fonts</td>
+            <td>Consenso (art. 6.1.a GDPR), revocabile in ogni momento dalle preferenze cookie</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>5. Destinatari dei dati</h2>
+    <ul>
+      <li>Supabase Inc. (infrastruttura di database, autenticazione e storage), in qualità di responsabile del trattamento.</li>
+      <li>Google Ireland Ltd., limitatamente alla richiesta dei caratteri tipografici, se hai acconsentito alla categoria "Preferenze".</li>
+      <li class="legal-page__placeholder">[DA COMPILARE: gateway di pagamento — fornitore non ancora scelto]</li>
+      <li class="legal-page__placeholder">[DA COMPILARE: fornitore del servizio email transazionale, non ancora scelto]</li>
+      <li class="legal-page__placeholder">[DA COMPILARE: Aruba come responsabile per la fatturazione elettronica — estremi da confermare]</li>
+    </ul>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>6. Trasferimenti extra UE</h2>
+    <p>
+      I dati trattati tramite Google Fonts possono comportare un trasferimento verso gli Stati Uniti (Google
+      Ireland Ltd. e le sue consociate).
+    </p>
+    <p class="legal-page__placeholder">
+      [DA COMPILARE: conferma della regione di hosting Supabase e della firma del DPA]
+    </p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>7. Periodo di conservazione</h2>
+    <p class="legal-page__placeholder">[DA COMPILARE: tempi di conservazione, per ciascuna finalità]</p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>8. Diritti dell'interessato</h2>
+    <p>
+      Hai diritto di accesso, rettifica, cancellazione, limitazione, portabilità e opposizione al trattamento dei
+      tuoi dati (artt. 15-22 GDPR), oltre al diritto di revocare in ogni momento un consenso già dato, senza
+      pregiudicare la liceità del trattamento basata sul consenso prestato prima della revoca.
+    </p>
+    <p class="legal-page__placeholder">
+      [DA COMPILARE: indirizzo/recapito per l'esercizio dei diritti dell'interessato]
+    </p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>9. Reclamo al Garante</h2>
+    <p>
+      Hai diritto di proporre reclamo al Garante per la protezione dei dati personali (Piazza Venezia 11, 00187
+      Roma) secondo le modalità indicate sul sito
+      <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">garanteprivacy.it</a>.
+    </p>
+  </section>
+
+  <p class="legal-page__link"><a routerLink="/cookie-policy">Leggi anche la Cookie Policy</a></p>
+</article>

@@ -1,0 +1,125 @@
+<ng-container *ngIf="isOpen()">
+  <button
+    type="button"
+    class="cookie-preferences__backdrop"
+    aria-label="Chiudi il pannello preferenze cookie"
+    (click)="rejectAll()"
+  ></button>
+
+  <div
+    class="cookie-preferences__panel"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="titleId"
+    [unipcFocusTrap]="true"
+    focusTrapInitialFocus=".cookie-preferences__close"
+    [focusTrapReturnTo]="trigger()"
+  >
+    <div class="cookie-preferences__header">
+      <h2 [id]="titleId" class="cookie-preferences__title">Preferenze cookie</h2>
+      <button
+        type="button"
+        class="cookie-preferences__close"
+        aria-label="Chiudi il pannello preferenze cookie"
+        (click)="rejectAll()"
+      >
+        <span aria-hidden="true">✕</span>
+      </button>
+    </div>
+
+    <div class="cookie-preferences__body">
+      <p class="cookie-preferences__intro">
+        Scegli quali categorie di servizi possiamo attivare. I servizi necessari al funzionamento del sito restano
+        sempre attivi. Puoi cambiare idea in ogni momento dal pulsante "Preferenze cookie" nel piè di pagina.
+      </p>
+
+      <section class="cookie-preferences__category">
+        <h3 class="cookie-preferences__category-title">
+          <label class="cookie-preferences__toggle">
+            <input type="checkbox" checked disabled />
+            Necessari
+          </label>
+        </h3>
+        <p class="cookie-preferences__category-desc">
+          Indispensabili al funzionamento del sito (carrello, memoria di questa scelta). Non richiedono consenso e
+          non possono essere disattivati.
+        </p>
+
+        <div class="cookie-preferences__table-wrap">
+          <table class="cookie-preferences__table">
+            <caption class="u-visually-hidden">Servizi necessari e relativi storage</caption>
+            <thead>
+              <tr>
+                <th scope="col">Servizio</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Durata</th>
+                <th scope="col">Finalità</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let service of necessaryServices()">
+                <tr *ngFor="let entry of service.cookies">
+                  <td>{{ service.name }}</td>
+                  <td>{{ entry.name }}</td>
+                  <td>{{ entry.duration }}</td>
+                  <td>{{ entry.purpose }}</td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="cookie-preferences__category" *ngFor="let group of configurableGroups()">
+        <h3 class="cookie-preferences__category-title">
+          <label class="cookie-preferences__toggle">
+            <input
+              type="checkbox"
+              [checked]="isChecked(group.category)"
+              (change)="onToggleChange(group.category, $event)"
+            />
+            {{ group.label }}
+          </label>
+        </h3>
+
+        <div class="cookie-preferences__service" *ngFor="let service of group.services">
+          <p class="cookie-preferences__service-desc">
+            <strong>{{ service.name }}</strong> — {{ service.provider }}. {{ service.purpose }}
+            <a
+              *ngIf="service.privacyPolicyUrl"
+              [href]="service.privacyPolicyUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Informativa del fornitore</a>
+          </p>
+
+          <div class="cookie-preferences__table-wrap" *ngIf="service.cookies.length > 0">
+            <table class="cookie-preferences__table">
+              <caption class="u-visually-hidden">Storage impostati da {{ service.name }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Nome</th>
+                  <th scope="col">Durata</th>
+                  <th scope="col">Finalità</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let entry of service.cookies">
+                  <td>{{ entry.name }}</td>
+                  <td>{{ entry.duration }}</td>
+                  <td>{{ entry.purpose }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="cookie-preferences__actions">
+      <button type="button" class="cookie-preferences__action" (click)="rejectAll()">Rifiuta tutti</button>
+      <button type="button" class="cookie-preferences__action" (click)="savePreferences()">Salva preferenze</button>
+      <button type="button" class="cookie-preferences__action" (click)="acceptAll()">Accetta tutti</button>
+    </div>
+  </div>
+</ng-container>

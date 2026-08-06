@@ -1,7 +1,15 @@
 <ng-container *ngIf="isOpen()">
   <button type="button" class="drawer__backdrop" aria-label="Chiudi il carrello" (click)="close()"></button>
 
-  <div class="drawer__panel" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId">
+  <div
+    class="drawer__panel"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="titleId"
+    [unipcFocusTrap]="true"
+    focusTrapInitialFocus=".drawer__close"
+    [focusTrapReturnTo]="trigger()"
+  >
     <div class="drawer__header">
       <h2 [id]="titleId" class="drawer__title">Il tuo carrello</h2>
       <button type="button" class="drawer__close" aria-label="Chiudi il carrello" (click)="close()">

@@ -1,0 +1,25 @@
+<section *ngIf="isVisible()" class="cookie-banner" role="region" aria-label="Preferenze sui cookie">
+  <button
+    type="button"
+    class="cookie-banner__close"
+    aria-label="Chiudi e rifiuta i cookie non necessari"
+    (click)="rejectAll()"
+  >
+    <span aria-hidden="true">✕</span>
+  </button>
+
+  <div class="cookie-banner__body">
+    <p class="cookie-banner__text">
+      Usiamo alcuni servizi tecnici necessari al funzionamento del sito e, solo con il tuo consenso, servizi di
+      preferenza come i caratteri tipografici di Google Fonts. Puoi accettare, rifiutare o personalizzare la tua
+      scelta in ogni momento. Maggiori informazioni nella
+      <a routerLink="/cookie-policy">Cookie Policy</a> e nella <a routerLink="/privacy">Privacy Policy</a>.
+    </p>
+
+    <div class="cookie-banner__actions">
+      <button type="button" class="cookie-banner__action" (click)="acceptAll()">Accetta tutti</button>
+      <button type="button" class="cookie-banner__action" (click)="rejectAll()">Rifiuta tutti</button>
+      <button type="button" class="cookie-banner__action" (click)="openPreferences()">Personalizza</button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,78 @@
+<!-- BOZZA — da validare con il legale dell'ateneo prima della pubblicazione -->
+<article class="legal-page">
+  <div class="legal-page__draft-banner" role="note">
+    BOZZA — contenuto in attesa di validazione legale, non ancora pubblicato in via definitiva.
+  </div>
+
+  <header class="legal-page__header">
+    <h1 class="legal-page__title">Cookie Policy</h1>
+    <p class="legal-page__updated">Ultimo aggiornamento: 6 agosto 2026</p>
+  </header>
+
+  <section class="legal-page__section">
+    <h2>Cosa sono i cookie e le tecnologie simili</h2>
+    <p>
+      Questa pagina descrive i cookie e le tecnologie di storage (localStorage, sessionStorage) usati da questo
+      sito, chi li imposta e a quale scopo, in conformità alle Linee guida cookie e altri strumenti di tracciamento
+      del Garante per la protezione dei dati personali (10 giugno 2021).
+    </p>
+    <p>
+      Le tue scelte restano valide per 6 mesi e puoi modificarle in ogni momento dal pulsante "Preferenze cookie"
+      nel piè di pagina.
+    </p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>Servizi attivi su questo sito</h2>
+    <div class="legal-page__table-wrap">
+      <table class="legal-page__table">
+        <caption class="u-visually-hidden">Elenco dei servizi che impostano storage sul dispositivo</caption>
+        <thead>
+          <tr>
+            <th scope="col">Servizio</th>
+            <th scope="col">Titolare</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Durata</th>
+            <th scope="col">Finalità</th>
+            <th scope="col">Categoria</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows">
+            <td>{{ row.servizio }}</td>
+            <td>{{ row.titolare }}</td>
+            <td>{{ row.nome }}</td>
+            <td>{{ row.tipoStorage }}</td>
+            <td>{{ row.durata }}</td>
+            <td>{{ row.finalita }}</td>
+            <td>{{ row.categoria }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>Come gestire le tue preferenze</h2>
+    <p>
+      Puoi accettare, rifiutare o personalizzare il consenso in ogni momento aprendo il pannello "Preferenze
+      cookie" dal piè di pagina del sito. Disattivare i cookie necessari non è possibile: servono al funzionamento
+      di base (carrello, memoria di questa scelta).
+    </p>
+  </section>
+
+  <section class="legal-page__section">
+    <h2>Titolare del trattamento</h2>
+    <p>
+      {{ legalEntity.ragioneSociale }} — {{ legalEntity.sedeLegale }} — P.IVA {{ legalEntity.partitaIva }} — PEC
+      {{ legalEntity.pec }} — email {{ legalEntity.email }}.
+    </p>
+    <p class="legal-page__placeholder">[DA COMPILARE: codice fiscale dell'ente]</p>
+    <p class="legal-page__placeholder">
+      [DA COMPILARE: nominativo e recapito del titolare del trattamento]
+    </p>
+  </section>
+
+  <p class="legal-page__link"><a routerLink="/privacy">Leggi anche la Privacy Policy</a></p>
+</article>

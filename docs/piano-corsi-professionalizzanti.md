@@ -266,14 +266,13 @@ Le transizioni sono validate **lato server** (funzione o trigger Postgres). Ogni
 
 ---
 
-### Fase 1 — Modelli e dati
+### Fase 1 — Modelli e dati ✅ completata
 
 - Modelli TypeScript allineati alle tabelle
-- `professional-courses.json` tipizzato per la vetrina (il prezzo autorevole resta a DB)
-- `CoursesService` con un solo punto di accesso ai dati, così il passaggio da JSON ad API non tocca i componenti
-- Funzione pura di scorporo IVA secondo la regola della Sezione 5, con unit test sui casi di arrotondamento
+- `CoursesService` legge direttamente da Supabase (`getAll()`/`getBySlug()`, `shareReplay(1)`) — nessun fixture JSON intermedio: il prezzo autorevole resta a DB fin dalla prima query, non solo "in teoria"
+- Funzione pura di scorporo IVA secondo la regola della Sezione 5: `splitVat()` in `frontend/src/app/core/models/vat.ts`, con `vat.spec.ts` (18 casi + due test a proprietà su ~3900 valori)
 
-**Uscita:** compila in strict mode, JSON validato contro i tipi, scorporo IVA che chiude sempre al centesimo.
+**Uscita:** compila in strict mode, `splitVat` chiude sempre al centesimo (`netCents + vatCents === grossCents` verificato per costruzione e a test).
 
 ---
 
@@ -281,20 +280,20 @@ Le transizioni sono validate **lato server** (funzione o trigger Postgres). Ogni
 
 - `features/corsi-professionalizzanti/` con route lazy: lista + `:slug`
 - Card riusabile in `shared/components/course-card/` — **se esiste già una card corsi nel sito, si estende quella**, non se ne crea una seconda
-- Prezzi esposti **IVA inclusa**, con dicitura esplicita
+- Prezzi esposti **IVA inclusa**, con dicitura esplicita — fatto: `vatRegimeLabel()` in card e dettaglio ("IVA inclusa" per `iva_22`, "Esente IVA art. 10" per `esente_art10`, nessuna dicitura per `da_definire`)
 - Filtri (area tematica, durata, prezzo) sincronizzati con i query param: filtri condivisibili e back del browser funzionante
-- SEO: title, meta, JSON-LD `Course`
+- SEO: title, meta — **manca ancora il JSON-LD `Course`** (nessuno script `application/ld+json` nel frontend a oggi)
 
-**Uscita:** navigazione lista→dettaglio, responsive su sm/md/lg/xl, navigabile da tastiera, Lighthouse a11y ≥ 95.
+**Uscita:** navigazione lista→dettaglio, responsive su sm/md/lg/xl, navigabile da tastiera. Lighthouse a11y ≥ 95 non ancora misurato con lo strumento.
 
 ---
 
-### Fase 3 — Carrello
+### Fase 3 — Carrello ✅ completata
 
-- `CartService` con signals, persistenza in `localStorage` **con versione dello schema** per invalidare dati vecchi
+- `CartService` con signals, persistenza in `localStorage` **con versione dello schema** (`unipc.cart.v1`) per invalidare dati vecchi
 - Un corso può stare in carrello una sola volta (quantità sempre 1: iscrizioni nominative)
-- Badge contatore nell'header, drawer o pagina `/carrello`
-- Totali calcolati con funzione pura testabile, in centesimi, con imponibile e imposta mostrati nel riepilogo
+- Badge contatore nell'header, drawer accessibile o pagina `/carrello`
+- Totali calcolati con funzione pura testabile, in centesimi, con imponibile e imposta mostrati nel riepilogo ("di cui imponibile" / "di cui IVA 22%", visibili solo se tutti i corsi in carrello sono `iva_22`)
 
 **Uscita:** aggiungi/rimuovi, persistenza dopo refresh, annuncio `aria-live` all'aggiunta, nessun crash se il localStorage è corrotto.
 
@@ -649,7 +648,7 @@ Le API restituiscono XML e notifiche, **non un PDF leggibile**. Il PDF di cortes
 
 ## 7. Ordine di lavoro consigliato
 
-Le fasi **1→2→3** sono chiuse: frontend puro, catalogo e carrello funzionanti. Va aggiunta la migration su `vat_regime` e la funzione di scorporo IVA.
+Le fasi **1→2→3** sono chiuse: frontend puro, catalogo e carrello funzionanti, migration su `vat_regime` applicata e funzione di scorporo IVA in vetrina (`splitVat`, `vat.ts`).
 
 Si prosegue con la **Fase 3b** (cookie e consensi), ancora frontend puro, che va chiusa **prima della Fase 4** perché il pulsante Google carica risorse di terze parti.
 
@@ -670,7 +669,7 @@ Infine la **Fase 10**.
 | 3 | Pagina catalogo con filtri | fatto |
 | 4 | Pagina dettaglio corso | fatto |
 | 5 | `CartService`, drawer, badge header | fatto |
-| 5b | Migration `vat_regime` a `iva_22` + funzione di scorporo IVA con test | pronto |
+| 5b | Migration `vat_regime` a `iva_22` + funzione di scorporo IVA con test | fatto |
 | 5c | Banner cookie, `ConsentService`, script loader, pagine policy | **bloccato: serve elenco servizi terzi + testi policy** |
 | 6 | Auth base: email+password, Google OAuth, sessione, guard, header | pronto |
 | 7 | Auth complementare: reset password, verifica email, identity linking, merge carrello | pronto |

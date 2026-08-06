@@ -18,6 +18,15 @@ export const routes: Routes = [
       import('./features/carrello/carrello.component').then((m) => m.CarrelloComponent),
   },
   {
+    path: 'cookie-policy',
+    loadComponent: () =>
+      import('./features/legal/cookie-policy/cookie-policy.component').then((m) => m.CookiePolicyComponent),
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./features/legal/privacy/privacy.component').then((m) => m.PrivacyComponent),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
