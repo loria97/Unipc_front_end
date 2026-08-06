@@ -1,0 +1,122 @@
+@use 'mixins' as *;
+
+:host {
+  display: contents;
+}
+
+.cookie-banner {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--z-cookie-banner);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  padding-block-end: max(16px, env(safe-area-inset-bottom));
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+  box-shadow: var(--shadow-lg);
+  animation: unipc-overlay-in 0.2s var(--ease);
+
+  @include sm {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px clamp(20px, 5vw, 40px);
+    padding-block-end: max(20px, env(safe-area-inset-bottom));
+  }
+}
+
+.cookie-banner__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--unipc-surface);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+.cookie-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  // Spazio per la X assoluta in alto a destra, solo sotto `sm` (dove il
+  // corpo è impilato sopra le azioni e la X potrebbe sovrapporsi al testo).
+  padding-inline-end: 40px;
+
+  @include sm {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+    padding-inline-end: 0;
+  }
+}
+
+.cookie-banner__text {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  max-width: 60ch;
+
+  a {
+    color: var(--unipc-surface);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+}
+
+.cookie-banner__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+
+  @include sm {
+    flex-direction: row;
+  }
+}
+
+// Le tre azioni hanno pari evidenza: stessa classe, stesso fondo, stesso
+// peso, nessuna variante "primaria/secondaria", nessun grigio.
+.cookie-banner__action {
+  min-height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-sm);
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-primary-600);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-banner {
+    animation: none;
+  }
+}

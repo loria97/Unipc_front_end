@@ -1,0 +1,24 @@
+<ng-container *ngIf="canShow(); else locked">
+  <ng-content></ng-content>
+</ng-container>
+
+<ng-template #locked>
+  <div class="consent-gate" *ngIf="service() as svc">
+    <p class="consent-gate__title">Contenuto di {{ svc.name }} bloccato</p>
+    <p class="consent-gate__detail">
+      {{ svc.provider }} — {{ svc.purpose }} Per vederlo devi acconsentire alla categoria
+      "{{ categoryLabels[svc.category] }}".
+    </p>
+    <div class="consent-gate__actions">
+      <button type="button" class="consent-gate__unlock" (click)="unlock()">Carica contenuto</button>
+      <a
+        *ngIf="svc.privacyPolicyUrl"
+        [href]="svc.privacyPolicyUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="consent-gate__policy-link"
+      >Informativa di {{ svc.provider }}</a>
+    </div>
+    <button type="button" class="consent-gate__manage" (click)="openPreferences()">Gestisci preferenze cookie</button>
+  </div>
+</ng-template>

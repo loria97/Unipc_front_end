@@ -31,10 +31,11 @@
   </div>
   <div style="border-top:1px solid rgba(255,255,255,.12);">
     <div style="max-width:var(--container-max);margin:0 auto;padding:20px var(--space-section-x);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;font-size:var(--fs-eyebrow);color:rgba(255,255,255,.55);">
-      <span>UNIPC S.r.l. · Sede legale: Via Magna Grecia 12, 88900 Crotone (KR) · Sede operativa: Piazza Pitagora 4, Crotone · P.IVA 03000000794 · PEC unipc&#64;pec.it</span>
-      <span style="display:flex;gap:16px;flex-wrap:wrap;">
-        <a href="#" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Privacy Policy</a>
-        <a href="#" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Cookie Policy</a>
+      <span>{{ legalEntity.ragioneSociale }} · Sede legale: {{ legalEntity.sedeLegale }} · Sede operativa: {{ legalEntity.sedeOperativa }} · P.IVA {{ legalEntity.partitaIva }} · PEC {{ legalEntity.pec }}</span>
+      <span style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+        <a routerLink="/privacy" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Privacy Policy</a>
+        <a routerLink="/cookie-policy" style="color:rgba(255,255,255,.7);" [unipcHover]="'color:var(--unipc-accent);'">Cookie Policy</a>
+        <button type="button" class="footer__cookie-prefs" (click)="openCookiePreferences()">Preferenze cookie</button>
         <span>© 2026 UNIPC</span>
       </span>
     </div>

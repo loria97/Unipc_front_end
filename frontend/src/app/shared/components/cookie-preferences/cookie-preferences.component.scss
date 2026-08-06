@@ -1,0 +1,238 @@
+@use 'mixins' as *;
+
+:host {
+  display: contents;
+}
+
+.cookie-preferences__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cookie-panel);
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(14, 27, 44, 0.6);
+  cursor: pointer;
+  animation: unipc-overlay-in 0.2s var(--ease);
+}
+
+.cookie-preferences__panel {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-cookie-panel) + 1);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--unipc-surface);
+  box-shadow: var(--shadow-lg);
+  animation: unipc-panel-in 0.22s var(--ease);
+
+  @include md {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: auto;
+    max-height: min(88vh, 720px);
+    width: min(92vw, 640px);
+    border-radius: var(--radius-lg);
+  }
+}
+
+.cookie-preferences__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--unipc-border);
+  flex-shrink: 0;
+}
+
+.cookie-preferences__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--unipc-ink);
+  margin: 0;
+}
+
+.cookie-preferences__close {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--unipc-border);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--unipc-ink);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--unipc-primary);
+  }
+}
+
+// Corpo scrollabile indipendentemente dall'altezza dell'intestazione e
+// della barra azioni sticky sotto: `min-height: 0` è ciò che permette a un
+// figlio flex di essere più piccolo del proprio contenuto e quindi
+// scrollare invece di spingere il layout.
+.cookie-preferences__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cookie-preferences__intro {
+  margin: 0;
+  font-size: var(--fs-body);
+  color: var(--unipc-muted);
+  line-height: 1.6;
+}
+
+.cookie-preferences__category {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--unipc-border);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.cookie-preferences__category-title {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.cookie-preferences__toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--unipc-ink);
+  cursor: pointer;
+  min-height: 44px;
+
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--unipc-primary);
+  }
+
+  input:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.cookie-preferences__category-desc,
+.cookie-preferences__service-desc {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+  line-height: 1.55;
+
+  a {
+    color: var(--unipc-primary);
+    font-weight: 600;
+  }
+}
+
+.cookie-preferences__service {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cookie-preferences__table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cookie-preferences__table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--unipc-border);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--unipc-surface-alt);
+    color: var(--unipc-ink);
+    font-weight: 600;
+  }
+
+  td {
+    color: var(--unipc-muted);
+  }
+}
+
+// Barra azioni sticky in basso: raggiungibile senza scorrere fino in fondo
+// al contenuto.
+.cookie-preferences__actions {
+  position: sticky;
+  bottom: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px;
+  padding-block-end: max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--unipc-border);
+  background: var(--unipc-surface);
+
+  @include sm {
+    flex-direction: row;
+  }
+}
+
+.cookie-preferences__action {
+  min-height: 44px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--unipc-primary);
+  border-radius: var(--radius-sm);
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--fs-body);
+  cursor: pointer;
+  flex: 1;
+  transition: background 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-primary-600);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-preferences__backdrop,
+  .cookie-preferences__panel {
+    animation: none;
+  }
+}
