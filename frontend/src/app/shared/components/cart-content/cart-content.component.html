@@ -1,0 +1,96 @@
+<div class="cart-content" [class.cart-content--drawer]="layout === 'drawer'">
+  <ng-container *ngIf="cart.isLoading(); else checkError">
+    <p class="cart-content__status">Caricamento del carrello in corso…</p>
+  </ng-container>
+
+  <ng-template #checkError>
+    <ng-container *ngIf="cart.loadError(); else loaded">
+      <div class="cart-content__state state--error">
+        <p class="cart-content__state-title">Non è stato possibile caricare il carrello.</p>
+        <p class="cart-content__state-detail">
+          Riprova tra qualche istante: se il problema persiste, contatta la segreteria.
+        </p>
+        <button type="button" class="cart-content__state-action" (click)="cart.retryLoad()">Riprova</button>
+      </div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #loaded>
+    <ng-container *ngIf="cart.items().length > 0; else empty">
+      <ul class="cart-content__list">
+        <li class="cart-content__item" *ngFor="let item of cart.items()">
+          <div class="cart-content__item-body">
+            <a
+              class="cart-content__item-title"
+              [routerLink]="['/corsi-professionalizzanti', item.slug]"
+            >{{ item.course.title }}</a>
+
+            <span class="cart-content__item-meta">
+              <span class="cart-content__item-type">{{
+                item.course.type === 'certificazione' ? 'Certificazione' : 'Corso'
+              }}</span>
+              <span class="cart-content__item-duration">{{ item.course.durataLabel }}</span>
+            </span>
+
+            <span class="cart-content__item-price">
+              <ng-container *ngIf="item.isPromo; else listPriceOnly">
+                <span class="cart-content__price-list">{{ item.course.listPriceCents | euroCents }}</span>
+                <span class="cart-content__price-promo">{{ item.priceCents | euroCents }}</span>
+              </ng-container>
+              <ng-template #listPriceOnly>
+                <span class="cart-content__price-current">{{ item.priceCents | euroCents }}</span>
+              </ng-template>
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="cart-content__remove"
+            [attr.aria-label]="'Rimuovi ' + item.course.title + ' dal carrello'"
+            (click)="remove(item.slug)"
+          >
+            <span aria-hidden="true">✕</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="cart-content__summary">
+        <p class="cart-content__summary-count">{{ itemsCountLabel() }} nel carrello</p>
+        <p class="cart-content__summary-total">
+          <span>Totale</span>
+          <strong>{{ cart.totalCents() | euroCents }}</strong>
+        </p>
+
+        <div class="cart-content__vat" *ngIf="canSplitVat()">
+          <p class="cart-content__vat-row">
+            <span>di cui imponibile</span>
+            <span>{{ vatBreakdown().netCents | euroCents }}</span>
+          </p>
+          <p class="cart-content__vat-row">
+            <span>di cui IVA {{ vatRatePercent }}%</span>
+            <span>{{ vatBreakdown().vatCents | euroCents }}</span>
+          </p>
+        </div>
+
+        <!-- TODO(fase-6): abilitare e puntare a /checkout -->
+        <button
+          type="button"
+          class="cart-content__checkout"
+          disabled
+          [attr.aria-describedby]="checkoutNoteId"
+        >Vai al checkout</button>
+        <p [id]="checkoutNoteId" class="cart-content__checkout-note">Il checkout sarà disponibile a breve.</p>
+
+        <a class="cart-content__continue" routerLink="/corsi-professionalizzanti">Continua a esplorare i corsi</a>
+      </div>
+    </ng-container>
+
+    <ng-template #empty>
+      <div class="cart-content__state state--empty">
+        <p class="cart-content__state-title">Il carrello è vuoto.</p>
+        <p class="cart-content__state-detail">Esplora il catalogo e aggiungi un corso per iniziare.</p>
+        <a class="cart-content__state-action" routerLink="/corsi-professionalizzanti">Vai al catalogo</a>
+      </div>
+    </ng-template>
+  </ng-template>
+</div>

@@ -19,6 +19,7 @@
       <ng-template #listPriceOnly>
         <span class="card__price-current">{{ pricing.cents | euroCents }}</span>
       </ng-template>
+      <span class="card__price-vat" *ngIf="vatLabel as label">{{ label }}</span>
     </span>
 
     <span class="card__cta" aria-hidden="true">Scopri di più →</span>

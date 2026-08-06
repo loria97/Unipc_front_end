@@ -1,0 +1,279 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.page__container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: clamp(32px, 6vw, 64px) var(--space-section-x) clamp(48px, 8vw, 96px);
+  min-width: 0;
+}
+
+// --- Stati: loading / not-found / errore ---
+// Stesso pattern BEM del catalogo (`.state`, `.state--error`, `.state--empty`).
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 52ch;
+  padding: 32px 0 clamp(48px, 8vw, 96px);
+  min-width: 0;
+}
+
+.state__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--unipc-ink);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.state__detail {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--unipc-muted);
+  margin: 0;
+}
+
+.state__action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 22px;
+  margin-top: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-primary-600);
+  }
+}
+
+// --- Dettaglio ---
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 72ch;
+  min-width: 0;
+  padding-bottom: clamp(48px, 8vw, 96px);
+}
+
+.detail__type-badge {
+  align-self: flex-start;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--unipc-accent-soft);
+  color: var(--unipc-primary-600);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.detail__area {
+  font-size: var(--fs-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--unipc-tag-concorso);
+}
+
+.detail__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: var(--fs-h2);
+  color: var(--unipc-ink);
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.detail__abstract {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--unipc-muted);
+  margin: 0;
+}
+
+.detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 4px 0;
+}
+
+.detail__meta-item {
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+  padding: 4px 10px;
+  border: 1px solid var(--unipc-border);
+  border-radius: var(--radius-sm);
+}
+
+.detail__price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.detail__price-current,
+.detail__price-promo {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.6rem;
+  color: var(--unipc-primary);
+}
+
+.detail__price-list {
+  font-size: 1.05rem;
+  color: var(--unipc-muted);
+  text-decoration: line-through;
+}
+
+.detail__price-vat {
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
+.detail__promo-label {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--unipc-accent-soft);
+  color: var(--unipc-primary-600);
+  font-size: var(--fs-small);
+  font-weight: 700;
+}
+
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin: 12px 0 8px;
+}
+
+.detail__already {
+  margin: 0;
+  font-size: var(--fs-body);
+  color: var(--unipc-muted);
+}
+
+.detail__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s var(--ease), transform 0.15s var(--ease);
+}
+
+.detail__cta--primary {
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-primary-600);
+  }
+}
+
+.detail__cta--secondary {
+  background: var(--unipc-surface);
+  color: var(--unipc-primary);
+  border: 1px solid var(--unipc-border);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--unipc-primary);
+  }
+}
+
+.detail__cta--accent {
+  background: var(--unipc-accent);
+  color: var(--unipc-ink);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-accent-600);
+    transform: translateY(-1px);
+  }
+}
+
+.detail__section {
+  padding-top: 20px;
+  border-top: 1px solid var(--unipc-border);
+  min-width: 0;
+}
+
+.detail__section-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: var(--unipc-ink);
+  margin: 0 0 12px;
+}
+
+.detail__rich-line {
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--unipc-muted);
+  margin: 0 0 12px;
+  overflow-wrap: break-word;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.detail__list {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--fs-body);
+  color: var(--unipc-muted);
+}
+
+.detail__punti {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--unipc-primary);
+  margin: 0 0 6px;
+}
+
+.detail__punti-note {
+  font-size: var(--fs-body);
+  color: var(--unipc-muted);
+  margin: 0;
+}
+
+@include md {
+  .detail__title {
+    font-size: var(--fs-h2);
+  }
+}

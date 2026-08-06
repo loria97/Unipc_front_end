@@ -13,6 +13,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'carrello',
+    loadComponent: () =>
+      import('./features/carrello/carrello.component').then((m) => m.CarrelloComponent),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),

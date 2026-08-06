@@ -39,4 +39,11 @@
   --fs-body: .9375rem;
   --fs-small: .8125rem;
   --fs-eyebrow: .75rem;
+
+  // Solo aggiunta: gli overlay esistenti (header) restano con i loro
+  // z-index inline invariati. Questi token garantiscono che il carrello
+  // stia sopra il menu mobile esistente.
+  --z-header: 100;
+  --z-overlay: 300;
+  --z-cart-drawer: 400;
 }

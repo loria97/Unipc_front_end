@@ -1,6 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, computed, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { CartDrawerService } from '../../core/services/cart-drawer.service';
+import { CartService } from '../../core/services/cart.service';
 import { HoverDirective } from '../../shared/directives/hover.directive';
 import { UiLogoComponent } from '../../shared/components/ui-logo/ui-logo.component';
 
@@ -24,6 +26,17 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   searchOpen = false;
   mega: number | null = null;
   mobileExpanded: Record<number, boolean> = {};
+
+  // Signals: la lettura in template funziona anche a change detection
+  // Default (nessuna migrazione a OnPush necessaria per l'header).
+  protected readonly cart = inject(CartService);
+  private readonly cartDrawer = inject(CartDrawerService);
+
+  protected readonly cartAriaLabel = computed(() => {
+    const count = this.cart.count();
+    if (count === 0) return 'Carrello vuoto';
+    return count === 1 ? 'Carrello, 1 corso' : `Carrello, ${count} corsi`;
+  });
 
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
@@ -101,6 +114,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   toggleMobile(item: NavItem, i: number): void {
     if (!item.mega) { this.mobileOpen = false; return; }
     this.mobileExpanded = { ...this.mobileExpanded, [i]: !this.mobileExpanded[i] };
+  }
+  openCart(): void {
+    this.cartDrawer.open();
+    this.closeMobile();
   }
   openSearch(): void {
     this.searchOpen = true;

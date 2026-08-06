@@ -20,6 +20,10 @@
     <ng-container *ngIf="desktop">
       <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
         <button aria-label="Apri la ricerca" (click)="openSearch()" style="width:44px;height:44px;border:1px solid var(--unipc-border);background:var(--unipc-surface);border-radius:var(--radius-sm);cursor:pointer;font-size:1.05rem;color:var(--unipc-ink);display:grid;place-items:center;transition:all .18s var(--ease);" [unipcHover]="'border-color:var(--unipc-primary);color:var(--unipc-primary);'">⌕</button>
+        <button [attr.aria-label]="cartAriaLabel()" (click)="openCart()" style="position:relative;width:44px;height:44px;border:1px solid var(--unipc-border);background:var(--unipc-surface);border-radius:var(--radius-sm);cursor:pointer;font-size:1.05rem;color:var(--unipc-ink);display:grid;place-items:center;transition:all .18s var(--ease);" [unipcHover]="'border-color:var(--unipc-primary);color:var(--unipc-primary);'">
+          <span aria-hidden="true">🛒︎</span>
+          <span *ngIf="cart.count() > 0" aria-hidden="true" style="position:absolute;top:-6px;right:-6px;min-width:20px;min-height:20px;padding:2px 6px;border-radius:999px;background:var(--unipc-accent);color:var(--unipc-ink);font-size:.6875rem;font-weight:700;line-height:1.4;display:flex;align-items:center;justify-content:center;">{{ cart.count() }}</span>
+        </button>
         <a href="#contatti" style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 22px;background:var(--unipc-accent);color:var(--unipc-ink);font-weight:700;font-size:var(--fs-small);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);transition:all .18s var(--ease);white-space:nowrap;" [unipcHover]="'background:var(--unipc-accent-600);transform:translateY(-1px);'">Richiedi info</a>
       </div>
     </ng-container>
@@ -27,6 +31,10 @@
     <ng-container *ngIf="!desktop">
       <div style="display:flex;align-items:center;gap:8px;">
         <button aria-label="Apri la ricerca" (click)="openSearch()" style="width:44px;height:44px;border:1px solid var(--unipc-border);background:var(--unipc-surface);border-radius:var(--radius-sm);cursor:pointer;font-size:1.15rem;color:var(--unipc-ink);display:grid;place-items:center;">⌕</button>
+        <button [attr.aria-label]="cartAriaLabel()" (click)="openCart()" style="position:relative;width:44px;height:44px;border:1px solid var(--unipc-border);background:var(--unipc-surface);border-radius:var(--radius-sm);cursor:pointer;font-size:1.15rem;color:var(--unipc-ink);display:grid;place-items:center;">
+          <span aria-hidden="true">🛒︎</span>
+          <span *ngIf="cart.count() > 0" aria-hidden="true" style="position:absolute;top:-6px;right:-6px;min-width:20px;min-height:20px;padding:2px 6px;border-radius:999px;background:var(--unipc-accent);color:var(--unipc-ink);font-size:.6875rem;font-weight:700;line-height:1.4;display:flex;align-items:center;justify-content:center;">{{ cart.count() }}</span>
+        </button>
         <button aria-label="Apri il menu" [attr.aria-expanded]="mobileOpen" (click)="openMobile()" style="width:44px;height:44px;border:none;background:var(--unipc-ink);color:var(--unipc-surface);border-radius:var(--radius-sm);cursor:pointer;font-size:1.25rem;display:grid;place-items:center;">≡</button>
       </div>
     </ng-container>
@@ -100,6 +108,12 @@
       <button aria-label="Chiudi il menu" (click)="closeMobile()" style="width:44px;height:44px;border:1px solid var(--unipc-border);background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-size:1.25rem;color:var(--unipc-ink);">✕</button>
     </div>
     <nav aria-label="Navigazione mobile" style="flex:1;overflow-y:auto;padding:8px 20px;">
+      <div style="border-bottom:1px solid var(--unipc-border);">
+        <button [attr.aria-label]="cartAriaLabel()" (click)="openCart()" style="width:100%;min-height:52px;display:flex;align-items:center;justify-content:space-between;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:600;color:var(--unipc-ink);padding:12px 0;text-align:left;">
+          Carrello
+          <span *ngIf="cart.count() > 0" aria-hidden="true" style="display:inline-flex;min-width:20px;min-height:20px;padding:2px 6px;border-radius:999px;background:var(--unipc-accent);color:var(--unipc-ink);font-size:.6875rem;font-weight:700;line-height:1.4;align-items:center;justify-content:center;">{{ cart.count() }}</span>
+        </button>
+      </div>
       <div *ngFor="let item of nav; let i = index" style="border-bottom:1px solid var(--unipc-border);">
         <a *ngIf="item.route as r; else navButton" [routerLink]="r" (click)="closeMobile()" style="width:100%;min-height:52px;display:flex;align-items:center;justify-content:space-between;background:transparent;font-family:inherit;font-size:1rem;font-weight:600;color:var(--unipc-ink);padding:12px 0;text-align:left;">
           {{ item.label }}

@@ -15,6 +15,21 @@ body {
 a { color: var(--unipc-primary); text-decoration: none; }
 a:hover { color: var(--unipc-accent); }
 
+// Nascosto visivamente ma letto dagli screen reader: nessun `left:-9999px`,
+// che genererebbe scroll orizzontale a viewport strette. Utility globale
+// (prima duplicata in `corsi-professionalizzanti.component.scss`).
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 ::selection { background: var(--unipc-accent-soft); }
 
 :focus-visible { outline: 3px solid var(--unipc-accent); outline-offset: 2px; border-radius: 4px; }

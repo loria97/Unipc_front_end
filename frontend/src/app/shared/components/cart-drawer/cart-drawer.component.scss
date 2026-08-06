@@ -1,0 +1,94 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.drawer__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cart-drawer);
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(14, 27, 44, 0.6);
+  cursor: pointer;
+  animation: unipc-overlay-in 0.2s var(--ease);
+}
+
+.drawer__panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: calc(var(--z-cart-drawer) + 1);
+  height: 100dvh;
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--unipc-surface);
+  box-shadow: var(--shadow-lg);
+  animation: unipc-drawer-in 0.28s var(--ease);
+
+  @include md {
+    max-inline-size: min(92vw, 26rem);
+  }
+}
+
+.drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--unipc-border);
+  flex-shrink: 0;
+}
+
+.drawer__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--unipc-ink);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.drawer__close {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--unipc-border);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--unipc-ink);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--unipc-primary);
+  }
+}
+
+// Il contenuto (`unipc-cart-content`) riempie lo spazio restante del
+// pannello: intestazione fissa sopra, lista interna scrollabile,
+// riepilogo ancorato in basso (gestito dallo stesso componente).
+unipc-cart-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer__backdrop,
+  .drawer__panel {
+    animation: none;
+  }
+}

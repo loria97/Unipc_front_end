@@ -119,6 +119,11 @@
   text-decoration: line-through;
 }
 
+.card__price-vat {
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
 .card__promo-label {
   padding: 3px 10px;
   border-radius: 999px;

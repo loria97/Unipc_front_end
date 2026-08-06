@@ -8,4 +8,9 @@ export const CORSI_PROFESSIONALIZZANTI_ROUTES: Routes = [
         (m) => m.CorsiProfessionalizzantiComponent,
       ),
   },
+  {
+    path: ':slug',
+    loadComponent: () =>
+      import('./course-detail/course-detail.component').then((m) => m.CourseDetailComponent),
+  },
 ];

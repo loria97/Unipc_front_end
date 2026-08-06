@@ -1,0 +1,123 @@
+<main id="main" class="page">
+  <div class="page__container">
+    <ng-container [ngSwitch]="viewState()">
+      <div class="state state--loading" *ngSwitchCase="'loading'">
+        <p class="state__title">Caricamento del corso in corso…</p>
+      </div>
+
+      <div class="state state--empty" *ngSwitchCase="'not-found'">
+        <p class="state__title">Corso non trovato.</p>
+        <p class="state__detail">Il corso cercato non esiste o non è più disponibile.</p>
+        <a class="state__action" routerLink="/corsi-professionalizzanti">Torna al catalogo</a>
+      </div>
+
+      <div class="state state--error" *ngSwitchCase="'error'">
+        <p class="state__title">Non è stato possibile caricare il corso.</p>
+        <p class="state__detail">Riprova tra qualche istante: se il problema persiste, contatta la segreteria.</p>
+        <button type="button" class="state__action" (click)="retry()">Riprova</button>
+      </div>
+
+      <ng-container *ngSwitchCase="'ready'">
+        <article class="detail" *ngIf="course() as course">
+          <span class="detail__type-badge">{{ course.type === 'certificazione' ? 'Certificazione' : 'Corso' }}</span>
+          <span class="detail__area">{{ course.area }}</span>
+          <h1 class="detail__title">{{ course.title }}</h1>
+          <p class="detail__abstract">{{ course.abstract }}</p>
+
+          <div class="detail__meta">
+            <span class="detail__meta-item">{{ course.durataLabel }}</span>
+            <span class="detail__meta-item" *ngIf="course.cfu as cfu">{{ cfu }} CFU</span>
+            <span class="detail__meta-item">{{ course.modalita }}</span>
+          </div>
+
+          <div class="detail__price-row" *ngIf="pricing() as pricing">
+            <ng-container *ngIf="pricing.isPromo; else listPriceOnly">
+              <span class="detail__price-list">{{ course.listPriceCents | euroCents }}</span>
+              <span class="detail__price-promo">{{ pricing.cents | euroCents }}</span>
+              <span class="detail__promo-label" *ngIf="course.promo as promo">{{ promo.label }}</span>
+            </ng-container>
+            <ng-template #listPriceOnly>
+              <span class="detail__price-current">{{ pricing.cents | euroCents }}</span>
+            </ng-template>
+            <span class="detail__price-vat" *ngIf="vatLabel() as label">{{ label }}</span>
+          </div>
+
+          <div class="detail__actions">
+            <ng-container *ngIf="!isInCart(); else alreadyInCart">
+              <button type="button" class="detail__cta detail__cta--primary" (click)="addToCart()">
+                Aggiungi al carrello
+              </button>
+            </ng-container>
+            <ng-template #alreadyInCart>
+              <p class="detail__already">Corso già nel carrello.</p>
+              <a class="detail__cta detail__cta--secondary" routerLink="/carrello">Vai al carrello</a>
+            </ng-template>
+
+            <button type="button" class="detail__cta detail__cta--accent" (click)="buyNow()">
+              Acquista subito
+            </button>
+          </div>
+
+          <p class="u-visually-hidden" aria-live="polite">{{ announcement() }}</p>
+
+          <section class="detail__section" aria-labelledby="a-chi-e-rivolto-heading">
+            <h2 id="a-chi-e-rivolto-heading" class="detail__section-title">A chi è rivolto</h2>
+            <p class="detail__rich-line" *ngFor="let line of course.aChiERivolto" [innerHTML]="line"></p>
+          </section>
+
+          <section class="detail__section" aria-labelledby="obiettivi-heading">
+            <h2 id="obiettivi-heading" class="detail__section-title">Obiettivi</h2>
+            <p class="detail__rich-line" *ngFor="let line of course.obiettivi" [innerHTML]="line"></p>
+          </section>
+
+          <section class="detail__section" aria-labelledby="requisiti-heading">
+            <h2 id="requisiti-heading" class="detail__section-title">Requisiti di ammissione</h2>
+            <p class="detail__rich-line" *ngFor="let line of course.requisitiAmmissione" [innerHTML]="line"></p>
+          </section>
+
+          <section class="detail__section" aria-labelledby="programma-heading" *ngIf="course.programma as programma">
+            <h2 id="programma-heading" class="detail__section-title">Programma</h2>
+            <p class="detail__rich-line" *ngFor="let line of programma" [innerHTML]="line"></p>
+          </section>
+
+          <section class="detail__section" aria-labelledby="prove-heading" *ngIf="course.provePreviste as prove">
+            <h2 id="prove-heading" class="detail__section-title">Prove previste</h2>
+            <ul class="detail__list">
+              <li *ngFor="let prova of prove">{{ prova }}</li>
+            </ul>
+          </section>
+
+          <section class="detail__section" aria-labelledby="classi-heading" *ngIf="course.classiConcorso as classi">
+            <h2 id="classi-heading" class="detail__section-title">Classi di concorso</h2>
+            <ul class="detail__list">
+              <li *ngFor="let classe of classi">{{ classe }}</li>
+            </ul>
+          </section>
+
+          <section
+            class="detail__section"
+            aria-labelledby="normativa-heading"
+            *ngIf="course.riferimentiNormativi as riferimenti"
+          >
+            <h2 id="normativa-heading" class="detail__section-title">Riferimenti normativi</h2>
+            <ul class="detail__list">
+              <li *ngFor="let riferimento of riferimenti">
+                <a [href]="riferimento.url" target="_blank" rel="noopener">{{ riferimento.label }}</a>
+              </li>
+            </ul>
+          </section>
+
+          <section
+            class="detail__section"
+            aria-labelledby="graduatoria-heading"
+            *ngIf="course.puntiGraduatoria as punti"
+          >
+            <h2 id="graduatoria-heading" class="detail__section-title">Punti in graduatoria</h2>
+            <p class="detail__punti">{{ punti.punti }} punti</p>
+            <p class="detail__punti-note">{{ punti.note }}</p>
+          </section>
+        </article>
+      </ng-container>
+    </ng-container>
+  </div>
+</main>

@@ -70,4 +70,35 @@ describe('CourseCardComponent', () => {
     expect(listPrice?.textContent).toContain('600,00');
     expect(promoPrice?.textContent).toContain('499,00');
   });
+
+  it('corso a IVA 22%: mostra "IVA inclusa" anche nel ramo promo', () => {
+    fixture.componentInstance.course = buildCourse({
+      vatRegime: 'iva_22',
+      listPriceCents: 60000,
+      promo: { priceCents: 49900, label: 'Promo', validUntil: '2026-12-31' },
+    });
+    fixture.componentInstance.now = new Date(2026, 5, 1);
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.card__price-vat')?.textContent).toContain('IVA inclusa');
+  });
+
+  it('corso esente art. 10: mostra "Esente IVA art. 10"', () => {
+    fixture.componentInstance.course = buildCourse({ vatRegime: 'esente_art10' });
+    fixture.componentInstance.now = new Date(2026, 5, 1);
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.card__price-vat')?.textContent).toContain('Esente IVA art. 10');
+  });
+
+  it('corso con regime da definire: nessuna dicitura IVA', () => {
+    fixture.componentInstance.course = buildCourse({ vatRegime: 'da_definire' });
+    fixture.componentInstance.now = new Date(2026, 5, 1);
+    fixture.detectChanges();
+
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.card__price-vat')).toBeNull();
+  });
 });

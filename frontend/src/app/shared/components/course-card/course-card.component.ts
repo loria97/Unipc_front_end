@@ -3,6 +3,7 @@ import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { effectivePriceCents } from '../../../core/models/course-pricing';
 import type { ProfessionalCourse } from '../../../core/models/course.model';
+import { vatRegimeLabel } from '../../../core/models/vat';
 import { EuroCentsPipe } from '../../pipes/euro-cents.pipe';
 
 /**
@@ -36,5 +37,10 @@ export class CourseCardComponent {
 
   get typeLabel(): string {
     return this.course.type === 'certificazione' ? 'Certificazione' : 'Corso';
+  }
+
+  /** `null` per `da_definire`: nessuna dicitura finché il regime non è deciso. */
+  get vatLabel(): string | null {
+    return vatRegimeLabel(this.course.vatRegime);
   }
 }

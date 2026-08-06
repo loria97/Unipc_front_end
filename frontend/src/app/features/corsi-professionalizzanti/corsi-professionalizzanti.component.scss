@@ -1,18 +1,7 @@
 @use 'mixins' as *;
 
-// Nascosto visivamente ma letto dagli screen reader: nessun `left:-9999px`,
-// che genererebbe scroll orizzontale a viewport strette.
-.u-visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+// `.u-visually-hidden` è ora un'utility globale in `src/styles.scss` (era
+// duplicata qui): vedi regola 1 di CLAUDE.md, non si duplica.
 
 :host {
   display: block;

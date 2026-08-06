@@ -1,0 +1,263 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.cart-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+// --- Densità "drawer": colonna piena altezza, lista scrollabile,
+// riepilogo ancorato in basso. La densità "page" (default) resta un
+// normale flusso a blocco, senza vincoli di altezza. ---
+.cart-content--drawer {
+  height: 100%;
+  min-height: 0;
+  gap: 0;
+}
+
+.cart-content__status {
+  padding: 24px 20px;
+  color: var(--unipc-muted);
+  font-size: var(--fs-body);
+}
+
+.cart-content--drawer .cart-content__status {
+  padding: 24px 20px;
+}
+
+.cart-content__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.cart-content--drawer .cart-content__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px;
+  gap: 16px;
+}
+
+.cart-content__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--unipc-border);
+  border-radius: var(--radius-md);
+  min-width: 0;
+}
+
+.cart-content__item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.cart-content__item-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--unipc-ink);
+  overflow-wrap: break-word;
+}
+
+.cart-content__item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
+.cart-content__item-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cart-content__price-current,
+.cart-content__price-promo {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--unipc-primary);
+}
+
+.cart-content__price-list {
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+  text-decoration: line-through;
+}
+
+// Pulsante di rimozione sempre visibile (mai `:hover`-only), 44x44 minimo.
+.cart-content__remove {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--unipc-border);
+  background: var(--unipc-surface);
+  border-radius: var(--radius-sm);
+  color: var(--unipc-danger);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--unipc-danger);
+    background: var(--unipc-surface-alt);
+  }
+}
+
+.cart-content__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-top: 1px solid var(--unipc-border);
+}
+
+.cart-content--drawer .cart-content__summary {
+  flex-shrink: 0;
+  padding-block-end: calc(1rem + env(safe-area-inset-bottom));
+}
+
+.cart-content__summary-count {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
+.cart-content__summary-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--unipc-ink);
+
+  strong {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: var(--unipc-primary);
+  }
+}
+
+// Ripartizione imponibile/imposta: informativa, visivamente subordinata al
+// totale sopra (font-size/colore secondari, mai in evidenza quanto `strong`
+// del totale). `flex-wrap` invece di una media query: a 320px le stringhe
+// reali stanno su una riga, ma se non entrassero vanno a capo invece di
+// produrre scroll orizzontale.
+.cart-content__vat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cart-content__vat-row {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
+.cart-content__checkout {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--unipc-border);
+  color: var(--unipc-muted);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: not-allowed;
+}
+
+.cart-content__checkout-note {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--unipc-muted);
+}
+
+.cart-content__continue {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: var(--fs-body);
+  color: var(--unipc-primary);
+  text-align: center;
+}
+
+.cart-content__state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 52ch;
+  padding: 32px 20px;
+  min-width: 0;
+}
+
+.cart-content--drawer .cart-content__state {
+  flex: 1;
+}
+
+.cart-content__state-title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--unipc-ink);
+  margin: 0;
+}
+
+.cart-content__state-detail {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--unipc-muted);
+  margin: 0;
+}
+
+.cart-content__state-action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 22px;
+  margin-top: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--unipc-primary);
+  color: var(--unipc-surface);
+  font-weight: 700;
+  font-size: 1rem;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--unipc-primary-600);
+  }
+}
